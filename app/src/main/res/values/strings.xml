@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SwipeRefreshBoth</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Go to my blogs</string>
+</resources>
