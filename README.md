@@ -19,10 +19,50 @@ Pull to refresh, extends from Android support v4 package SwipeRefreshLayout, it 
 
 note: v4 package must from api 21. if not, design is different.
 
+## How to use?
+
+以下几个文件对应拷入项目中：`listview_footer.xml`, `attrs.xml`, `default.xml`, `CircularProgress.java`, `PullRefreshListener.java`, `SwipeRefreshBothPull.java`. 
+
+需要使用下拉刷新的xml 这样写：
+
+```xml
+<mrfu.swiperefreshboth.lib.SwipeRefreshBothPull
+    android:id="@+id/swipe_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</mrfu.swiperefreshboth.lib.SwipeRefreshBothPull>
+```
+
+Java 代码中如下写法，需要增加 `PullRefreshListener` 接口
+
+```Java
+···
+mSwipeLayout = (SwipeRefreshBothPull) findViewById(R.id.swipe_container);
+mSwipeLayout.setOnPullRefreshListener(this);
+···
+@Override
+public void onPullDownRefresh() {
+   //TODO 下拉刷新时的操作
+}
+@Override
+public void onPullUpRefresh() {
+   //TODO 上拉加载时的操作
+}
+···
+//刷新完成后调用该方法结束刷新动画
+mSwipeLayout.refreshReset();
+···
+```
+
 
 ## Preview
 
-![preview1](https://github.com/MrFuFuFu/ImageViewEx/blob/master/Image/screen.png)
+![preview1](https://raw.githubusercontent.com/MrFuFuFu/SwipeRefreshBoth/master/images/pulldown.png)
+![preview2](https://raw.githubusercontent.com/MrFuFuFu/SwipeRefreshBoth/master/images/pullup.png)
 
 ## More about me
 
