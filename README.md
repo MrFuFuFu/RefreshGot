@@ -4,24 +4,16 @@ SwipeRefreshBoth
 
 ## 描述
 
-下拉刷新，继承自 Android support v4 包里的 SwipeRefreshLayout, 对其进行了扩展，使其增加上拉加载的功能，只增加了 ListView 的扩展，不对 ScrollView 进行扩展，主要是 ScrollView 扩展没有实际意义，如果需要，可以邮件我，立马加上（之前加上了，为了少一个类，被我干掉了）。
-
-先需要增加 v4包，这个应该是标配了，使用这个方法导入：
-
-`compile 'com.android.support:support-v4:21.0.+'`
-
-注：最少需要 21开始，不然样式是不一样的。
+下拉刷新，取出了 Android support v4 包里的 SwipeRefreshLayout, 对其进行了扩展，使其增加上拉加载的功能，只增加了 ListView 的扩展，不对 ScrollView 进行扩展，主要是 ScrollView 扩展没有实际意义，如果需要，可以邮件我，立马加上（之前加上了，为了少一个类，被我干掉了）。
 
 
 ## describe
 
-Pull to refresh, extends from Android support v4 package SwipeRefreshLayout, it was extended to the pull from bottom, only adds ListView extension. does not extend ScrollView. mainly ScrollView extended moot, if necessary you can e-mail me, immediately add it (before adding, in order to reduce a class, I take it removed).
+Pull to refresh, get from Android support v4 package SwipeRefreshLayout, it was extended to the pull from bottom, only adds ListView extension. does not extend ScrollView. mainly ScrollView extended moot, if necessary you can e-mail me, immediately add it (before adding, in order to reduce a class, I had take it removed).
 
-note: v4 package must from api 21. if not, design is different.
 
 ## How to use?
 
-以下几个文件对应拷入项目中：`listview_footer.xml`, `attrs.xml`, `default.xml`, `CircularProgress.java`, `PullRefreshListener.java`, `SwipeRefreshBothPull.java`. 
 
 需要使用下拉刷新的xml 这样写：
 
