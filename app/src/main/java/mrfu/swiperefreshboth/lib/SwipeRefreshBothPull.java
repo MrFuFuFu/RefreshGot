@@ -1,7 +1,6 @@
 package mrfu.swiperefreshboth.lib;
 
 import android.content.Context;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +31,7 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
     /**
      * ListView的加载中footer
      */
-    private View mListViewFooter;
+    public View mListViewFooter;
 
     /**
      * 按下时的y坐标
@@ -70,9 +69,9 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
      */
     private void initColor() {
         //设置下拉刷新时圈圈的主题色
-        setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light, android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+//        setColorSchemeResources(R.color.theme_color_primary,
+//                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
         //设置上拉加载时 footer 的背景色
         setFooterViewBackground(R.color.color_background);
     }
@@ -151,7 +150,7 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
      * @return
      */
     private boolean canLoad() {
-        return isBottom() && !isLoading && isPullUp();
+        return isBottom() && !isLoading && isPullUp() && !super.isRefreshing();
     }
 
     /**
@@ -210,6 +209,9 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (onListViewScrollListener != null){
+            onListViewScrollListener.onScrollStateChanged(view, scrollState);
+        }
     }
 
     @Override
@@ -217,6 +219,9 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
         // 滚动时到了最底部也可以加载更多
         if (canLoad()) {
             loadData();
+        }
+        if (onListViewScrollListener != null){
+            onListViewScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
     }
 
@@ -226,5 +231,16 @@ public class SwipeRefreshBothPull extends SwipeRefreshLayout implements OnScroll
     public void refreshReset() {
         setRefreshing(false);
         setLoading(false);
+    }
+
+    public interface OnListViewScrollListener{
+        void onScrollStateChanged(AbsListView view, int scrollState);
+        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    }
+
+    OnListViewScrollListener onListViewScrollListener;
+
+    public void setOnListViewScrollListener(OnListViewScrollListener listener){
+        onListViewScrollListener = listener;
     }
 }

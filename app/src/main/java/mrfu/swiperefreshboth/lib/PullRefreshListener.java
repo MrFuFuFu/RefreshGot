@@ -2,8 +2,8 @@ package mrfu.swiperefreshboth.lib;
 
 public interface PullRefreshListener {
 	
-	public void onPullDownRefresh();
+	void onPullDownRefresh();
 	
-	public void onPullUpRefresh();
+	void onPullUpRefresh();
 
 }
