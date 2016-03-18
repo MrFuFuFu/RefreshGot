@@ -1,10 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
-        <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Material Design setup-->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -14,6 +11,5 @@
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base"/>
-
 
 </resources>

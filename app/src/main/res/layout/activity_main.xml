@@ -12,7 +12,7 @@
         android:minHeight="?attr/actionBarSize" />
 
 
-    <mrfu.swiperefreshboth.lib.SwipeRefreshBothPull
+    <mrfu.swiperefreshboth.lib.listview.SwipeRefreshListView
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
             android:listSelector="@android:color/transparent"
             android:scrollbars="none" />
 
-    </mrfu.swiperefreshboth.lib.SwipeRefreshBothPull>
+    </mrfu.swiperefreshboth.lib.listview.SwipeRefreshListView>
 
     <include
         android:id="@+id/progress_layout"

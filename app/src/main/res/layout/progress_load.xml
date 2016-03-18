@@ -6,7 +6,7 @@
     android:background="@color/color_background"
     android:visibility="gone">
 
-    <mrfu.swiperefreshboth.lib.CircularProgress
+    <mrfu.swiperefreshboth.lib.utils.CircularProgress
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_centerInParent="true"
