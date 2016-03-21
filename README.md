@@ -4,12 +4,10 @@ SwipeRefreshBoth
 
 ## 描述
 
-下拉刷新，取出了 Android support v4 包里的 SwipeRefreshLayout, 对其进行了扩展，使其增加上拉加载的功能，只增加了 ListView 的扩展，不对 ScrollView 进行扩展，主要是 ScrollView 扩展没有实际意义，如果需要，可以邮件我，立马加上（之前加上了，为了少一个类，被我干掉了）。
+下拉刷新
 
+包含: ListView 和 RecyclerView 的形式!!
 
-## describe
-
-Pull to refresh, get from Android support v4 package SwipeRefreshLayout, it was extended to the pull from bottom, only adds ListView extension. does not extend ScrollView. mainly ScrollView extended moot, if necessary you can e-mail me, immediately add it (before adding, in order to reduce a class, I had take it removed).
 
 
 ## How to use?
@@ -18,36 +16,30 @@ Pull to refresh, get from Android support v4 package SwipeRefreshLayout, it was 
 需要使用下拉刷新的xml 这样写：
 
 ```xml
-<mrfu.swiperefreshboth.lib.SwipeRefreshBothPull
-    android:id="@+id/swipe_container"
+<mrfu.swiperefreshboth.lib.LxRefresh
+    android:id="@+id/lx_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ListView
-        android:id="@+id/listview"
+
+    <mrfu.swiperefreshboth.lib.LxListView
+        android:id="@+id/lx_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</mrfu.swiperefreshboth.lib.SwipeRefreshBothPull>
+        android:layout_height="match_parent"/>
+
+</mrfu.swiperefreshboth.lib.LxRefresh>
 ```
 
 Java 代码中如下写法，需要增加 `PullRefreshListener` 接口
 
 ```Java
-···
-mSwipeLayout = (SwipeRefreshBothPull) findViewById(R.id.swipe_container);
-mSwipeLayout.setOnPullRefreshListener(this);
-···
-@Override
-public void onPullDownRefresh() {
-   //TODO 下拉刷新时的操作
-}
-@Override
-public void onPullUpRefresh() {
-   //TODO 上拉加载时的操作
-}
-···
-//刷新完成后调用该方法结束刷新动画
-mSwipeLayout.refreshReset();
-···
+LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+mLxRecyclerView.setHasFixedSize(true);
+mLxRecyclerView.setLayoutManager(linearLayoutManager);
+
+setData();
+mRefreshAdapter = new RefreshAdapter(mList, this);
+mLxRecyclerView.setAdapter(mRefreshAdapter);
+mLxRefresh.setOnPullRefreshListener(this);
 ```
 
 
