@@ -80,6 +80,14 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         mFooterViews.add(view);
     }
 
+    public void setVisibilityFooterView(int visibility) {
+        if (mFooterViews != null && mFooterViews.size() > 0){
+            for (View view : mFooterViews){
+                view.setVisibility(visibility);
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return getHeaderCount() + getFooterCount() + getWrappedItemCount();
