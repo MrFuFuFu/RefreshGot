@@ -16,8 +16,7 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     private LinearLayoutManager mLinearLayoutManager;
 
-    public EndlessRecyclerOnScrollListener(
-            LinearLayoutManager linearLayoutManager) {
+    public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager) {
         this.mLinearLayoutManager = linearLayoutManager;
     }
 
@@ -42,6 +41,10 @@ public abstract class EndlessRecyclerOnScrollListener extends
             onLoadMore(currentPage);
             loading = true;
         }
+    }
+
+    public void setNewRefresh(){
+        previousTotal = 0;
     }
 
     public abstract void onLoadMore(int currentPage);

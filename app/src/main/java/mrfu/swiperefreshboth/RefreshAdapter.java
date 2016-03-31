@@ -26,6 +26,11 @@ public class RefreshAdapter extends RecyclerView.Adapter<RefreshAdapter.ViewHold
         this.context = context;
     }
 
+    public void setList(List<String> list){
+        mList = list;
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item, parent, false);
