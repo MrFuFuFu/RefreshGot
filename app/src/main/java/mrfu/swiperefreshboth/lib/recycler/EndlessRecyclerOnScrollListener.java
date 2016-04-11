@@ -16,7 +16,8 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     private LinearLayoutManager mLinearLayoutManager;
 
-    public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager) {
+    public EndlessRecyclerOnScrollListener(
+            LinearLayoutManager linearLayoutManager) {
         this.mLinearLayoutManager = linearLayoutManager;
     }
 

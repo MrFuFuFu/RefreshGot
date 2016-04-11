@@ -51,7 +51,7 @@ mLxRefresh.refreshReset();
 对于 `RecyclerView` 如果加载到了最后一页,不再有上拉加载,则再多调用一次如下方法:
 
 ```java
-mLxRefresh.lastRvReset();
+mLxRefresh.setLoadMoreEnable(false);//false 关闭加载更多. true 可以加载更多
 ```
 
 如果只需要下拉刷新,不需要上拉加载,则调用如下方法关闭上拉加载:
