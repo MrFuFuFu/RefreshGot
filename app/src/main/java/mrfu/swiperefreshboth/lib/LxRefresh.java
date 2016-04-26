@@ -1,6 +1,7 @@
 package mrfu.swiperefreshboth.lib;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,10 +70,17 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
     public LxRefresh(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        if (null != attrs) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LxRefresh);
+            mLoarMoreEnable = ta.getBoolean(R.styleable.LxRefresh_loadmoreable, false);
+            ta.recycle();
+        }
+
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 //        mListViewFooter = LayoutInflater.from(context).inflate(R.layout.listview_footer, null, false);
         mListViewFooter = ViewUtils.initFooterView(context);
         initColor();
+
     }
 
     /**
@@ -100,20 +108,22 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
      * All
      */
     private void initRefreshChildView() {
-        if (mLxListView != null || mLxRecyclerView != null) return;
-        int childs = getChildCount();
-        if (childs > 0) {
-            View childView = getChildAt(0);
-            if (childView == null){
-                Log.e("LxRefresh", "childView == null");
-                return;
-            }
+
+        if (mLxListView != null || mLxRecyclerView != null){
+            return;
+        }
+        final int childs = getChildCount();
+
+        for (int i = childs-1; i >= 0; i--) {
+            final View childView = getChildAt(i);
             if (childView instanceof LxListView) {
                 mViewType = 0;
                 initLxListView(childView);
+                break;
             }else if (childView instanceof LxRecyclerView){
                 mViewType = 1;
                 initLxRecyclerView(childView);
+                break;
             }
         }
     }
@@ -165,6 +175,8 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
             }
         };
         mLxRecyclerView.addOnScrollListener(mEndlessRecyclerOnScrollListener);
+        // onlayout里才初始化mLxRecyclerView 导致Loadmore提前开启
+        setLoadMoreEnable(mLoarMoreEnable);
     }
 
     public void setOnPullRefreshListener(PullRefreshListener listener){
@@ -319,14 +331,6 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         return false;
     }
 
-//<<<<<<< HEAD
-//    /**
-//     * 预定义高度
-//     */
-//    private static final int PRE_HEIGHT = 250;
-//
-//    /**
-//=======
     /**
      * 预定义高度
      */
@@ -415,17 +419,6 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         setLvLoading(false);
     }
 
-    /**
-     * RecyclerView
-     * 最后一页刷新...隐藏 footer
-     */
-    @Deprecated public void lastRvReset(){
-        if (mLxRecyclerView != null){
-            mLxRecyclerView.setVisibilityFooterView(View.GONE);
-        }
-        mIsRvLastPage = true;
-    }
-
     private boolean mLoarMoreEnable = true;
     public void setLoadMoreEnable(boolean loadMoreEnable) {
         mLoarMoreEnable = loadMoreEnable;
@@ -433,6 +426,12 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
             mLxRecyclerView.setVisibilityFooterView(loadMoreEnable?View.VISIBLE:View.GONE);
         }
         mIsRvLastPage = !loadMoreEnable;
+    }
+
+    public void setLoadMoreComplete() {
+        if (null != mEndlessRecyclerOnScrollListener) {
+            mEndlessRecyclerOnScrollListener.setLoadMoreComplete();
+        }
     }
 
     /**

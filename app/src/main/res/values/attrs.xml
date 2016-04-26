@@ -15,4 +15,8 @@
         <attr name="circular_progress_duration" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="LxRefresh">
+        <attr name="loadmoreable" format="boolean"/>
+    </declare-styleable>
+
 </resources>

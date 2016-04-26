@@ -44,4 +44,5 @@ public class LxRecyclerView extends RecyclerView {
     public void setVisibilityFooterView(int visibility){
         mHeaderViewRecyclerAdapter.setVisibilityFooterView(visibility);
     }
+
 }

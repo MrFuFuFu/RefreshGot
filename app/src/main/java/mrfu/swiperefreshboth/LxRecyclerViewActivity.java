@@ -50,6 +50,7 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
         mRefreshAdapter = new RefreshAdapter(mList, this);
         mLxRecyclerView.setAdapter(mRefreshAdapter);
         mLxRefresh.setOnPullRefreshListener(this);
+        mLxRefresh.setLoadMoreEnable(true);
     }
 
     @Override
@@ -98,9 +99,11 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
     @Override
     public void onPullUpRefresh() {
         if (aaaa > 0){
+            mLxRefresh.setLoadMoreEnable(aaaa > 0);
             simulateLoadMoreData();
         }else {
             mLxRefresh.setLoadMoreEnable(false);
+            mLxRefresh.refreshReset();
         }
     }
 
@@ -122,6 +125,8 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                         loadMoreData();
                         mRefreshAdapter.setList(mList);
                         aaaa --;
+                        mLxRefresh.setLoadMoreEnable(aaaa > 0);
+//                        mLxRefresh.setLoadMoreComplete();
                         mLxRefresh.refreshReset();
                         return null;
                     }

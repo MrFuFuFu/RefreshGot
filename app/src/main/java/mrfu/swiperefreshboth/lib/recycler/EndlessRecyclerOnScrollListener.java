@@ -30,6 +30,7 @@ public abstract class EndlessRecyclerOnScrollListener extends
         lastCompletelyVisiableItemPosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
 
         if (loading) {
+            // // FIXME: 16/4/18  有bug previousTotal==total 可能一直是true 导致loading一直为 true
             if (totalItemCount > previousTotal) {
                 loading = false;
                 previousTotal = totalItemCount;
@@ -49,4 +50,8 @@ public abstract class EndlessRecyclerOnScrollListener extends
     }
 
     public abstract void onLoadMore(int currentPage);
+
+    public void setLoadMoreComplete() {
+        loading = false;
+    }
 }
