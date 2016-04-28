@@ -245,11 +245,18 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
     private float mLastMotionX;
     private float mLastMotionY;
 
+    private float ly;
+    private float lx;
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+
+        int action = event.getAction();
+
         if (mViewType == 0){
+
             if (isReadyForPullUp() && !isLoading && !super.isRefreshing()){// read to refresh
-                int action = event.getAction();
+//                int action = event.getAction();
                 float x = event.getX();
                 float y = event.getY();
                 switch (action) {
@@ -269,7 +276,28 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
                 }
 
             }
+
+            //处理 viewpager 的时间冲突
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    lx = event.getRawX();
+                    ly = event.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (!canChildScrollUp()) {
+                        float dy = event.getRawY() - ly;
+                        float dx = event.getRawX() - lx;
+                        if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {
+                            return super.onInterceptTouchEvent(event);
+                        } else {
+                            return false;
+                        }
+                    }
+                    break;
+            }
+
         }
+
         return super.onInterceptTouchEvent(event);
     }
 
