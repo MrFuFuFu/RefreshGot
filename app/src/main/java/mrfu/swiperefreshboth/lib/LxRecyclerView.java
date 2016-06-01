@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import mrfu.swiperefreshboth.lib.recycler.HeaderViewRecyclerAdapter;
-import mrfu.swiperefreshboth.lib.utils.ViewUtils;
+import mrfu.swiperefreshboth.lib.utils.FooterView;
 
 /**
  * Created by MrFu on 16/3/18.
@@ -34,7 +34,7 @@ public class LxRecyclerView extends RecyclerView {
     }
 
     private void createLoadMoreView() {
-        mHeaderViewRecyclerAdapter.addFooterView(ViewUtils.initFooterView(getContext()));
+        mHeaderViewRecyclerAdapter.setFooterView(new FooterView(getContext()));
     }
 
     public HeaderViewRecyclerAdapter getHeaderViewRecyclerAdapter(){
@@ -43,6 +43,10 @@ public class LxRecyclerView extends RecyclerView {
 
     public void setVisibilityFooterView(int visibility){
         mHeaderViewRecyclerAdapter.setVisibilityFooterView(visibility);
+    }
+
+    public void theEnd(boolean isEnd){
+        mHeaderViewRecyclerAdapter.theEnd(isEnd);
     }
 
 }
