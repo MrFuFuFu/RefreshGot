@@ -9,7 +9,7 @@ public abstract class EndlessRecyclerOnScrollListener extends
             .getSimpleName();
 
     private int previousTotal = 0;
-    private boolean loading = true;
+    private boolean loading = false;
     int lastCompletelyVisiableItemPosition, visibleItemCount, totalItemCount;
 
     private int currentPage = 1;
@@ -25,12 +25,15 @@ public abstract class EndlessRecyclerOnScrollListener extends
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
+        // 如果不是上拉 就return
+        if (dy<=0){
+            return;
+        }
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = mLinearLayoutManager.getItemCount();
         lastCompletelyVisiableItemPosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
 
         if (loading) {
-            // // FIXME: 16/4/18  有bug previousTotal==total 可能一直是true 导致loading一直为 true
             if (totalItemCount > previousTotal) {
                 loading = false;
                 previousTotal = totalItemCount;
@@ -40,13 +43,14 @@ public abstract class EndlessRecyclerOnScrollListener extends
                 && (visibleItemCount > 0)
                 && (lastCompletelyVisiableItemPosition >= totalItemCount - 1)) {
             currentPage++;
-            onLoadMore(currentPage);
             loading = true;
+            onLoadMore(currentPage);
         }
     }
 
     public void setNewRefresh(){
         previousTotal = 0;
+        loading = false;
     }
 
     public abstract void onLoadMore(int currentPage);

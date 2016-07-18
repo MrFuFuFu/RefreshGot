@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mrfu.swiperefreshboth.lib.utils.FooterView;
@@ -23,12 +25,12 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     private static final int ADAPTER_MAX_TYPES = 100;
 
     private RecyclerView.Adapter mWrappedAdapter;
-    //    private List<View> mHeaderViews, mFooterViews;
+    private List<View> mHeaderViews, mFooterViews;
     private FooterView mFooterView;
     private Map<Class, Integer> mItemTypesOffset;
 
     public HeaderViewRecyclerAdapter(RecyclerView.Adapter adapter) {
-//        mHeaderViews = new ArrayList<>();
+        mHeaderViews = new ArrayList<>();
 //        mFooterViews = new ArrayList<>();
         mItemTypesOffset = new HashMap<>();
         setWrappedAdapter(adapter);
@@ -57,7 +59,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         if (viewType < HEADERS_START + getHeaderCount())
-            return new StaticViewHolder(null);
+            return new StaticViewHolder(mHeaderViews.get(0));
         else if (viewType < FOOTERS_START + getFooterCount())
             return new StaticViewHolder(mFooterView);
         else {
@@ -72,9 +74,9 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
             mWrappedAdapter.onBindViewHolder(viewHolder, position - hCount);
     }
 
-//    public void addHeaderView(View view) {
-//        mHeaderViews.add(view);
-//    }
+    public void addHeaderView(View view) {
+        mHeaderViews.add(view);
+    }
 //
 //    public void addFooterView(View view) {
 //        mFooterViews.add(view);
@@ -94,6 +96,22 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
+    /**
+     *
+     * @param color R.color.color_xxx
+     */
+    public void modifyFooterViewBackgroundColor(int color){
+        if (mFooterView != null){
+            mFooterView.modifyFooterViewBackgroundColor(color);
+        }
+    }
+
+    public void modifyFooterViewText(String text){
+        if (mFooterView != null){
+            mFooterView.modifyFooterViewText(text);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return getHeaderCount() + getFooterCount() + getWrappedItemCount();
@@ -104,7 +122,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public int getHeaderCount() {
-        return 0;
+        return mHeaderViews.size();
     }
 
     public int getFooterCount() {

@@ -8,6 +8,9 @@ import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import mrfu.swiperefreshboth.R;
+
+
 /**
  * Created by MrFu on 16/3/21.
  */
@@ -15,6 +18,7 @@ public class FooterView extends RelativeLayout {
 
     private CircularProgress circularProgress;
     private TextView textView;
+    private RelativeLayout footer;
 
     public FooterView(Context context) {
         this(context, null);
@@ -32,8 +36,8 @@ public class FooterView extends RelativeLayout {
     private void initFooterView(Context context){
         int dp10 = dip2px(context, 10);
         int dp20 = dip2px(context, 20);
-        RelativeLayout footer = new RelativeLayout(context);
-        footer.setBackgroundColor(Color.parseColor("#fff3f3f3"));
+        footer = new RelativeLayout(context);
+        footer.setBackgroundColor(context.getResources().getColor(R.color.color_background));
         footer.setPadding(dp10, dp10, dp10, dp10);
         footer.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
 
@@ -44,7 +48,7 @@ public class FooterView extends RelativeLayout {
         footer.addView(circularProgress, circular_Params);
 
         textView = new TextView(context);
-        textView.setTextColor(Color.parseColor("#FFb0b0b0"));
+        textView.setTextColor(context.getResources().getColor(R.color.black_b0b0b0));
         textView.setTextSize(12f);
         textView.setText("-- end --");
         textView.setVisibility(View.GONE);
@@ -55,6 +59,22 @@ public class FooterView extends RelativeLayout {
 //        return footer;
         addView(footer);
 
+    }
+
+    /**
+     *
+     * @param color R.color.color_xxx
+     */
+    public void modifyFooterViewBackgroundColor(int color){
+        if (footer != null){
+            footer.setBackgroundColor(getContext().getResources().getColor(color));
+        }
+    }
+
+    public void modifyFooterViewText(String text){
+        if (textView != null){
+            textView.setText(text);
+        }
     }
 
     public static int dip2px(Context context, float dpValue) {

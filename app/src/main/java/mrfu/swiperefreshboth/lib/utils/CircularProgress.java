@@ -3,7 +3,6 @@ package mrfu.swiperefreshboth.lib.utils;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -23,6 +21,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+
+import java.lang.ref.WeakReference;
 
 import mrfu.swiperefreshboth.R;
 
@@ -299,11 +299,84 @@ public class CircularProgress extends View {
         }
     }
 
+    private final AngleProperty mAngleProperty = new AngleProperty(CircularProgress.this, Float.class, "angle");
+
+    private static class AngleProperty extends Property<IndeterminateProgressDrawable, Float> {
+
+        private final WeakReference<CircularProgress> mWeakReference;
+        public AngleProperty(CircularProgress circularProgress, Class<Float> type, String name) {
+            super(type, name);
+            mWeakReference = new WeakReference<>(circularProgress);
+        }
+
+        @Override
+        public Float get(IndeterminateProgressDrawable object) {
+            return object.getCurrentGlobalAngle();
+        }
+
+        @Override
+        public void set(IndeterminateProgressDrawable object, Float value) {
+            object.setCurrentGlobalAngle(value);
+        }
+    }
+
+    private final SweepProperty mSweepProperty = new SweepProperty(CircularProgress.this, Float.class, "arc");
+
+    private static class SweepProperty extends Property<IndeterminateProgressDrawable, Float> {
+
+        private final WeakReference<CircularProgress> mWeakReference;
+        public SweepProperty(CircularProgress circularProgress, Class<Float> type, String name) {
+            super(type, name);
+            mWeakReference = new WeakReference<>(circularProgress);
+        }
+
+        @Override
+        public Float get(IndeterminateProgressDrawable object) {
+            return object.getCurrentSweepAngle();
+        }
+
+        @Override
+        public void set(IndeterminateProgressDrawable object, Float value) {
+            object.setCurrentSweepAngle(value);
+        }
+    }
+
+    private static class SweepAnimator implements Animator.AnimatorListener {
+
+        private final WeakReference<IndeterminateProgressDrawable> mWeakReference;
+        private SweepAnimator(IndeterminateProgressDrawable indeterminateProgressDrawable){
+            mWeakReference = new WeakReference<>(indeterminateProgressDrawable);
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+            IndeterminateProgressDrawable indeterminateProgressDrawable = mWeakReference.get();
+            if (indeterminateProgressDrawable != null){
+                indeterminateProgressDrawable.toggleAppearingMode();
+            }
+        }
+    }
+
     /**
      * https://gist.github.com/castorflex/4e46a9dc2c3a4245a28e
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private class IndeterminateProgressDrawable extends Drawable implements Animatable {
+        private final SweepAnimator mSweepAnimator = new SweepAnimator(IndeterminateProgressDrawable.this);
 
         private final Interpolator ANGLE_INTERPOLATOR = new LinearInterpolator();
         private final Interpolator SWEEP_INTERPOLATOR = new DecelerateInterpolator();
@@ -379,7 +452,8 @@ public class CircularProgress extends View {
             mDrawableBounds.bottom = bounds.bottom - mBorderWidth / 2f - .5f;
         }
 
-        ///////////////////////////////////////// Animation /////////////////////////////////////////
+        ///////////////////////////////////////// ArcTranslateAnimation /////////////////////////////////////////
+
 
 //        private Property<IndeterminateProgressDrawable, Float> mAngleProperty
 //                = new Property<IndeterminateProgressDrawable, Float>(Float.class, "angle") {
@@ -393,7 +467,7 @@ public class CircularProgress extends View {
 //                object.setCurrentGlobalAngle(value);
 //            }
 //        };
-
+//
 //        private Property<IndeterminateProgressDrawable, Float> mSweepProperty
 //                = new Property<IndeterminateProgressDrawable, Float>(Float.class, "arc") {
 //            @Override
@@ -407,45 +481,6 @@ public class CircularProgress extends View {
 //            }
 //        };
 
-        private CustomProperty<IndeterminateProgressDrawable, Float> mAngleProperty = new CustomProperty<IndeterminateProgressDrawable, Float>(Float.class, "angle") {
-            @Override
-            public Float get(IndeterminateProgressDrawable object) {
-                return object.getCurrentGlobalAngle();
-            }
-
-            @Override
-            public void set(IndeterminateProgressDrawable object, Float value) {
-                object.setCurrentGlobalAngle(value);
-            }
-        };
-
-        private CustomProperty<IndeterminateProgressDrawable, Float> mSweepProperty = new CustomProperty<IndeterminateProgressDrawable, Float>(Float.class, "arc") {
-            @Override
-            public Float get(IndeterminateProgressDrawable object) {
-                return object.getCurrentSweepAngle();
-            }
-
-            @Override
-            public void set(IndeterminateProgressDrawable object, Float value) {
-                object.setCurrentSweepAngle(value);
-            }
-        };
-
-
-        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        private abstract class CustomProperty<T, V> extends Property<T, V>{
-
-            public CustomProperty(Class<V> type, String name) {
-                super(type, name);
-            }
-
-            /**
-             * Returns the current value that this property represents on the given <code>object</code>.
-             */
-            public abstract V get(T object);
-        }
-
-        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         private void setupAnimations() {
             mObjectAnimatorAngle = ObjectAnimator.ofFloat(this, mAngleProperty, 360f);
             mObjectAnimatorAngle.setInterpolator(ANGLE_INTERPOLATOR);
@@ -458,39 +493,28 @@ public class CircularProgress extends View {
             mObjectAnimatorSweep.setDuration(SWEEP_ANIMATOR_DURATION);
             mObjectAnimatorSweep.setRepeatMode(ValueAnimator.RESTART);
             mObjectAnimatorSweep.setRepeatCount(ValueAnimator.INFINITE);
-            mObjectAnimatorSweep.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    toggleAppearingMode();
-                }
-            });
-        }
-
-        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        private void objAnimatorStart(){
-            mObjectAnimatorAngle.start();
-            mObjectAnimatorSweep.start();
-        }
-
-        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        private void objAnimatorCancel(){
-            mObjectAnimatorAngle.cancel();
-            mObjectAnimatorSweep.cancel();
+//            mObjectAnimatorSweep.addListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//                    toggleAppearingMode();
+//                }
+//            });
+            mObjectAnimatorSweep.addListener(mSweepAnimator);
         }
 
         @Override
@@ -503,7 +527,8 @@ public class CircularProgress extends View {
                 mIsFirst = false;
             }
             mRunning = true;
-            objAnimatorStart();
+            mObjectAnimatorAngle.start();
+            mObjectAnimatorSweep.start();
             invalidateSelf();
         }
 
@@ -513,7 +538,8 @@ public class CircularProgress extends View {
                 return;
             }
             mRunning = false;
-            objAnimatorCancel();
+            mObjectAnimatorAngle.cancel();
+            mObjectAnimatorSweep.cancel();
             invalidateSelf();
         }
 
