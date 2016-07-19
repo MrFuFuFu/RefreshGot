@@ -61,21 +61,25 @@ public class FooterView extends RelativeLayout {
 
     /**
      *
-     * @param color R.color.color_xxx
+     * @param colorRes R.color.color_xxx
      */
-    public void modifyFooterViewBackgroundColor(int color){
+    public void setFooterViewBackgroundColor(int colorRes){
         if (footer != null){
-            footer.setBackgroundColor(getContext().getResources().getColor(color));
+            footer.setBackgroundColor(getContext().getResources().getColor(colorRes));
         }
     }
 
-    public void modifyFooterViewText(String text){
+    /**
+     * modify end text desc
+     * @param text
+     */
+    public void setFooterEndText(String text){
         if (textView != null){
             textView.setText(text);
         }
     }
 
-    public static int dip2px(Context context, float dpValue) {
+    private static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }

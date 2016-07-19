@@ -82,7 +82,7 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
 
     @Override
     public void onPullDownRefresh() {
-        aaaa= 5;
+        aaaa= 3;
         Observable
                 .timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .map(new Func1<Long, Object>() {
@@ -91,6 +91,7 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                         fetchingNewData();
                         mRefreshAdapter.setList(mList);
                         mLxRefresh.refreshReset();
+                        mLxRefresh.setLoadMoreEnable(aaaa > 0);
                         return null;
                     }
                 }).subscribe();
@@ -114,7 +115,7 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
         setData();
     }
 
-    int aaaa= 5;
+    int aaaa= 3;
 
     private void simulateLoadMoreData() {
         Observable
@@ -126,7 +127,6 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                         mRefreshAdapter.setList(mList);
                         aaaa --;
                         mLxRefresh.setLoadMoreEnable(aaaa > 0);
-//                        mLxRefresh.setLoadMoreComplete();
                         mLxRefresh.refreshReset();
                         return null;
                     }

@@ -162,7 +162,6 @@ public class LxRefresh extends SwipeRefreshLayout {
     private final OnRefreshListener onRefreshListener = new OnRefreshListener() {
         @Override
         public void onRefresh() {//下拉刷新
-            mIsRvLastPage = false;
             if (mViewType == ViewType.Recycler && mEndlessRecyclerOnScrollListener != null){
                 mEndlessRecyclerOnScrollListener.setNewRefresh();
             }
@@ -204,7 +203,15 @@ public class LxRefresh extends SwipeRefreshLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (isListViewAndTouch()){
-            mSomeTouchListener.dispatchTouchEventLxRefresh(event);
+            OnEventType onEventType = mSomeTouchListener.dispatchTouchEventLxRefresh(event);
+            switch (onEventType){
+                case TURE:
+                    return true;
+                case FALSE:
+                    return false;
+                case SUPER:
+                    return super.dispatchTouchEvent(event);
+            }
         }
         return super.dispatchTouchEvent(event);
     }
@@ -212,7 +219,15 @@ public class LxRefresh extends SwipeRefreshLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (isListViewAndTouch()){
-            mSomeTouchListener.onInterceptTouchEventLxRefresh(event);
+            OnEventType onEventType = mSomeTouchListener.onInterceptTouchEventLxRefresh(event);
+            switch (onEventType){
+                case TURE:
+                    return true;
+                case FALSE:
+                    return false;
+                case SUPER:
+                    return super.onInterceptTouchEvent(event);
+            }
         }
         return super.onInterceptTouchEvent(event);
     }
@@ -220,10 +235,20 @@ public class LxRefresh extends SwipeRefreshLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (isListViewAndTouch()){
-            mSomeTouchListener.onTouchEventLxRefresh(ev);
+            OnEventType onEventType = mSomeTouchListener.onTouchEventLxRefresh(ev);
+            switch (onEventType){
+                case TURE:
+                    return true;
+                case FALSE:
+                    return false;
+                case SUPER:
+                    return super.onTouchEvent(ev);
+            }
         }
         return super.onTouchEvent(ev);
     }
+
+
 
     private boolean isListViewAndTouch(){
         return mViewType == ViewType.List && mSomeTouchListener != null;
@@ -237,15 +262,16 @@ public class LxRefresh extends SwipeRefreshLayout {
         mNoLoadMore = true;
     }
 
-    /**
-     * ListView
-     * currently, only support setting of listview background
-     * @param colorRes
-     */
-    public void setLvFooterViewBackground(int colorRes) {
-        if (mViewType == ViewType.List && mLxListView != null) {
-            mLxListView.setLvFooterViewBackground(colorRes);
+    public void setFooterViewBackgroundColor(int colorRes) {
+        if (mViewType == ViewType.List) {
+            mLxListView.setFooterViewBackgroundColor(colorRes);
+        }else {
+            mLxRecyclerView.setFooterViewBackgroundColor(colorRes);
         }
+    }
+
+    public void setFooterEndText(String text){
+        mLxRecyclerView.setFooterEndText(text);
     }
 
     /**
@@ -267,20 +293,12 @@ public class LxRefresh extends SwipeRefreshLayout {
         }else {
             Log.e("MrFu", "setLoadMoreEnable but the LxRecyclerView is null!!!!");
         }
-        mIsRvLastPage = !loadMoreEnable;
-    }
-
-    public void setLoadMoreComplete() {
-        if (null != mEndlessRecyclerOnScrollListener) {
-            mEndlessRecyclerOnScrollListener.setLoadMoreComplete();
+        if (!loadMoreEnable){
+            if (null != mEndlessRecyclerOnScrollListener) {
+                mEndlessRecyclerOnScrollListener.setLoadMoreComplete();
+            }
         }
     }
-
-    /**
-     * RecyclerView
-     * 是否是最后一页
-     */
-    private boolean mIsRvLastPage = false;
 
     OnListViewScrollListener onListViewScrollListener;
 
@@ -296,14 +314,18 @@ public class LxRefresh extends SwipeRefreshLayout {
 
 
     public interface SomeTouchListener{
-        boolean onInterceptTouchEventLxRefresh(MotionEvent event);
-        boolean dispatchTouchEventLxRefresh(MotionEvent event);
-        boolean onTouchEventLxRefresh(MotionEvent ev);
+        OnEventType onInterceptTouchEventLxRefresh(MotionEvent event);
+        OnEventType dispatchTouchEventLxRefresh(MotionEvent event);
+        OnEventType onTouchEventLxRefresh(MotionEvent ev);
     }
 
     public interface OnListViewScrollListener{
         void onScrollStateChanged(AbsListView view, int scrollState);
         void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    }
+
+    public enum OnEventType{
+        TURE, FALSE, SUPER
     }
 
 }

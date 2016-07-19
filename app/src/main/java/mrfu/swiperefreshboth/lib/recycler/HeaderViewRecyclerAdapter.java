@@ -100,15 +100,15 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
      *
      * @param color R.color.color_xxx
      */
-    public void modifyFooterViewBackgroundColor(int color){
+    public void setFooterViewBackgroundColor(int color){
         if (mFooterView != null){
-            mFooterView.modifyFooterViewBackgroundColor(color);
+            mFooterView.setFooterViewBackgroundColor(color);
         }
     }
 
-    public void modifyFooterViewText(String text){
+    public void setFooterEndText(String text){
         if (mFooterView != null){
-            mFooterView.modifyFooterViewText(text);
+            mFooterView.setFooterEndText(text);
         }
     }
 

@@ -49,4 +49,12 @@ public class LxRecyclerView extends RecyclerView {
         mHeaderViewRecyclerAdapter.theEnd(isEnd);
     }
 
+    public void setFooterViewBackgroundColor(int colorRes){
+        mHeaderViewRecyclerAdapter.setFooterViewBackgroundColor(colorRes);
+    }
+
+    public void setFooterEndText(String text){
+        mHeaderViewRecyclerAdapter.setFooterEndText(text);
+    }
+
 }

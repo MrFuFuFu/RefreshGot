@@ -9,6 +9,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import mrfu.swiperefreshboth.lib.utils.ViewUtils;
+import mrfu.swiperefreshboth.lib.LxRefresh.OnEventType;
 
 /**
  * Created by MrFu on 16/3/18.
@@ -81,7 +82,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
 
 
     @Override
-    public boolean onInterceptTouchEventLxRefresh(MotionEvent event) {
+    public OnEventType onInterceptTouchEventLxRefresh(MotionEvent event) {
         int action = event.getAction();
         if (isReadyForPullUp() && !isLoading && !mLxRefresh.isRefreshing()){// read to refresh
             float x = event.getX();
@@ -117,18 +118,18 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
                     float dy = event.getRawY() - ly;
                     float dx = event.getRawX() - lx;
                     if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {
-                        return super.onInterceptTouchEvent(event);
+                        return OnEventType.SUPER;
                     } else {
-                        return false;
+                        return OnEventType.FALSE;
                     }
                 }
                 break;
         }
-        return super.onInterceptTouchEvent(event);
+        return OnEventType.SUPER;
     }
 
     @Override
-    public boolean dispatchTouchEventLxRefresh(MotionEvent event) {
+    public OnEventType dispatchTouchEventLxRefresh(MotionEvent event) {
         final int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -142,17 +143,17 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
             default:
                 break;
         }
-        return super.dispatchTouchEvent(event);
+        return OnEventType.SUPER;
     }
 
     @Override
-    public boolean onTouchEventLxRefresh(MotionEvent ev) {
+    public OnEventType onTouchEventLxRefresh(MotionEvent ev) {
         switch (ev.getAction()){
             case MotionEvent.ACTION_MOVE:
                 mLastMotionY = ev.getY();
                 break;
         }
-        return super.onTouchEvent(ev);
+        return OnEventType.SUPER;
     }
 
     /**
@@ -213,7 +214,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
      * currently, only support setting of listview background
      * @param colorRes
      */
-    public void setLvFooterViewBackground(int colorRes) {
+    public void setFooterViewBackgroundColor(int colorRes) {
         if (mListViewFooter != null) {
             mListViewFooter.setBackgroundColor(getResources().getColor(colorRes));
         }
