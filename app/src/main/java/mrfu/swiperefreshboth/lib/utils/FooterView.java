@@ -37,12 +37,12 @@ public class FooterView extends RelativeLayout {
         int dp10 = dip2px(context, 10);
         int dp20 = dip2px(context, 20);
         footer = new RelativeLayout(context);
-        footer.setBackgroundColor(context.getResources().getColor(R.color.color_background));
+        footer.setBackgroundColor(Color.parseColor("#00000000"));
         footer.setPadding(dp10, dp10, dp10, dp10);
         footer.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
 
         circularProgress = new CircularProgress(context);
-        circularProgress.setBackgroundColor(Color.parseColor("#00000000"));//android.R.color.transparent
+        circularProgress.setBackgroundColor(Color.parseColor("#00000000"));
         LayoutParams circular_Params = new LayoutParams(dp20, dp20);
         circular_Params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         footer.addView(circularProgress, circular_Params);
@@ -56,9 +56,7 @@ public class FooterView extends RelativeLayout {
         text_Params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         footer.addView(textView, text_Params);
 
-//        return footer;
         addView(footer);
-
     }
 
     /**

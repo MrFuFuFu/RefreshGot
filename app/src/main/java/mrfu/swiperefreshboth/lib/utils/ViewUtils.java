@@ -15,7 +15,7 @@ public class ViewUtils {
         int dp10 = dip2px(context, 10);
         int dp20 = dip2px(context, 20);
         RelativeLayout footer = new RelativeLayout(context);
-        footer.setBackgroundColor(Color.parseColor("#7fe8e8e8"));
+        footer.setBackgroundColor(Color.parseColor("#00000000"));
         footer.setPadding(dp10, dp10, dp10, dp10);
         footer.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
 

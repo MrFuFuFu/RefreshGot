@@ -10,56 +10,31 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 
 import mrfu.swiperefreshboth.R;
 import mrfu.swiperefreshboth.lib.recycler.EndlessRecyclerOnScrollListener;
 import mrfu.swiperefreshboth.lib.utils.PullRefreshListener;
-import mrfu.swiperefreshboth.lib.utils.ViewUtils;
 
 /**
  * Created by MrFu on 16/3/18.
  */
-public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrollListener {
+public class LxRefresh extends SwipeRefreshLayout {
+    enum ViewType{
+        List, Recycler
+    }
+
+    ViewType mViewType;
+
     private PullRefreshListener mPullRefreshListener;
     private LxListView mLxListView;
     private LxRecyclerView mLxRecyclerView;
-    /**
-     * 0: ListView
-     * 1: RecyclerView
-     */
-    private int mViewType = 0;
-
-
-    /**
-     * 滑动到最下面时的上拉操作
-     */
-
-    private int mTouchSlop;
-
-    /**
-     * ListView的加载中footer
-     */
-    public View mListViewFooter;
-
-    /**
-     * 按下时的y坐标
-     */
-    private int mYDown;
-    /**
-     * 抬起时的y坐标, 与mYDown一起用于滑动到底部时判断是上拉还是下拉
-     */
-    private int mLastY;
-    /**
-     * 是否在加载中 ( 上拉加载更多 )
-     */
-    private boolean isLoading = false;
 
     /**
      * 只有下拉刷新, 无加载更多
      */
     private boolean mNoLoadMore = false;
+
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
 
 
@@ -72,15 +47,13 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
 
         if (null != attrs) {
             TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.LxRefresh);
-            mLoarMoreEnable = ta.getBoolean(R.styleable.LxRefresh_loadmoreable, false);
+            mLoarMoreEnable = ta.getBoolean(R.styleable.LxRefresh_loadmoreable, true);
             ta.recycle();
         }
-
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-//        mListViewFooter = LayoutInflater.from(context).inflate(R.layout.listview_footer, null, false);
-        mListViewFooter = ViewUtils.initFooterView(context);
-        initColor();
-
+        setColorSchemeResources(android.R.color.holo_red_dark,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     /**
@@ -93,22 +66,7 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         setRefreshing(true);
     }
 
-    /**
-     * All
-     */
-    private void initColor() {
-        setColorSchemeResources(R.color.circular_progress_color,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        setLvFooterViewBackground(R.color.color_background);
-    }
-
-    /**
-     * All
-     */
     private void initRefreshChildView() {
-
         if (mLxListView != null || mLxRecyclerView != null){
             return;
         }
@@ -117,11 +75,11 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         for (int i = childs-1; i >= 0; i--) {
             final View childView = getChildAt(i);
             if (childView instanceof LxListView) {
-                mViewType = 0;
+                mViewType = ViewType.List;
                 initLxListView(childView);
                 break;
             }else if (childView instanceof LxRecyclerView){
-                mViewType = 1;
+                mViewType = ViewType.Recycler;
                 initLxRecyclerView(childView);
                 break;
             }
@@ -136,7 +94,27 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         if (mLxListView != null) return;
         mLxListView = (LxListView) childView;
         // 设置滚动监听器给ListView, 使得滚动的情况下也可以自动加载
-        mLxListView.setOnScrollListener(this);
+        mLxListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (onListViewScrollListener != null){
+                    onListViewScrollListener.onScrollStateChanged(view, scrollState);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (onListViewScrollListener != null){
+                    onListViewScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                }
+
+                if (mViewType == ViewType.List  && mLxListView.canLoad() && !isRefreshing() && !mNoLoadMore){
+                    if (doOnPullUpRefresh()){
+                        mLxListView.setLvLoading(true);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -152,7 +130,7 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
             return;
         }
 
-        if(layoutManager instanceof GridLayoutManager){//GridLayoutManager extends LinearLayoutManager
+        if(layoutManager instanceof GridLayoutManager){
             final GridLayoutManager gridLayoutManager = (GridLayoutManager)layoutManager;
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
@@ -164,17 +142,11 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener((LinearLayoutManager)layoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-                if (mNoLoadMore){//没有加载更多
-                    if (mViewType == 1 && mLxRecyclerView != null){//RecyclerView
-//                        mLxRecyclerView.setVisibilityFooterView(View.GONE);
+                if (!doOnPullUpRefresh()){//没有加载更多
+                    if (mViewType == ViewType.Recycler && mLxRecyclerView != null){//RecyclerView
                         mLxRecyclerView.theEnd(true);
                     }
-                    return;
                 }
-//                if (mIsRvLastPage) return;//最后一页
-//                if (mLoarMoreEnable) {
-                mPullRefreshListener.onPullUpRefresh();
-//                }
             }
         };
         mLxRecyclerView.addOnScrollListener(mEndlessRecyclerOnScrollListener);
@@ -191,19 +163,29 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         @Override
         public void onRefresh() {//下拉刷新
             mIsRvLastPage = false;
-            if (mViewType == 1 && mEndlessRecyclerOnScrollListener != null){
+            if (mViewType == ViewType.Recycler && mEndlessRecyclerOnScrollListener != null){
                 mEndlessRecyclerOnScrollListener.setNewRefresh();
             }
             //update by yifeiyuan
-            if (mViewType == 1 && mLxRecyclerView != null && !mNoLoadMore&&mLoarMoreEnable){
-//                mLxRecyclerView.setVisibilityFooterView(View.VISIBLE);
+            if (mViewType == ViewType.Recycler && mLxRecyclerView != null && !mNoLoadMore&&mLoarMoreEnable){
                 mLxRecyclerView.theEnd(false);
             }
             mPullRefreshListener.onPullDownRefresh();
         }
     };
 
-
+    /**
+     * 做下拉刷新操作, 并返回成功与否
+     * @return
+     */
+    public boolean doOnPullUpRefresh() {
+        if (mPullRefreshListener != null && !mNoLoadMore && mLoarMoreEnable) {
+            mPullRefreshListener.onPullUpRefresh();
+            return true;
+        }else {
+            return false;
+        }
+    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -221,166 +203,30 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
-        if (mViewType == 0){//only listview need dispatchTouchEvent
-            final int action = event.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    // 按下
-                    mYDown = (int) event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    // 移动
-                    mLastY = (int) event.getRawY();
-                    break;
-//                case MotionEvent.ACTION_UP:
-//                    // 抬起
-//                    if (canLvLoad()) {
-//                        loadLvData();
-//                    }
-//                    break;
-                default:
-                    break;
-            }
+        if (isListViewAndTouch()){
+            mSomeTouchListener.dispatchTouchEventLxRefresh(event);
         }
-
         return super.dispatchTouchEvent(event);
     }
 
-    private float mLastMotionX;
-    private float mLastMotionY;
-
-    private float ly;
-    private float lx;
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-
-        int action = event.getAction();
-
-        if (mViewType == 0){
-
-            if (isReadyForPullUp() && !isLoading && !super.isRefreshing()){// read to refresh
-//                int action = event.getAction();
-                float x = event.getX();
-                float y = event.getY();
-                switch (action) {
-                    case MotionEvent.ACTION_MOVE:{
-                        if (y < mLastMotionY) {
-                            loadLvData();
-                        }
-                        break;
-                    }
-                    case MotionEvent.ACTION_DOWN: {
-                        mLastMotionY = event.getY();
-                        mLastMotionX = event.getX();
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP:
-                        break;
-                }
-
-            }
-
-            //处理 viewpager 的事件冲突
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    lx = event.getRawX();
-                    ly = event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (!canChildScrollUp()) {
-                        float dy = event.getRawY() - ly;
-                        float dx = event.getRawX() - lx;
-                        if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {
-                            return super.onInterceptTouchEvent(event);
-                        } else {
-                            return false;
-                        }
-                    }
-                    break;
-            }
-
+        if (isListViewAndTouch()){
+            mSomeTouchListener.onInterceptTouchEventLxRefresh(event);
         }
-
         return super.onInterceptTouchEvent(event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mViewType == 0){
-            switch (ev.getAction()){
-                case MotionEvent.ACTION_MOVE:
-                    mLastMotionY = ev.getY();
-                    break;
-            }
+        if (isListViewAndTouch()){
+            mSomeTouchListener.onTouchEventLxRefresh(ev);
         }
         return super.onTouchEvent(ev);
     }
 
-//    /**
-//     * ListView
-//     * 是否可以加载更多, 条件是到了最底部, listview不在加载中, 且为上拉操作.
-//     *
-//     * @return
-//     */
-//    private boolean canLvLoad() {
-//        return isLvBottom() && !isLoading && isLvPullUp() && !super.isRefreshing();
-//    }
-
-    /**
-     * ListView
-     * 判断是否到了最底部
-     */
-    private boolean isLvBottom() {
-        if (mLxListView != null && mLxListView.getAdapter() != null) {
-            boolean isBottom = mLxListView.getLastVisiblePosition() == (mLxListView.getAdapter().getCount() - 1);
-            return isBottom;
-        }
-        return false;
-    }
-
-    /**
-     * ListView
-     * 是否是上拉操作
-     *
-     * @return
-     */
-    private boolean isLvPullUp() {
-        return (mYDown - mLastY) >= mTouchSlop;
-    }
-
-    private boolean isReadyForPullUp(){
-        if(mLxListView != null){
-            int count = mLxListView.getCount();
-            if(mLxListView.getLastVisiblePosition() >= count - 2){
-                final int childIndex = mLxListView.getLastVisiblePosition() - mLxListView.getFirstVisiblePosition();
-                final View lastVisibleChild = mLxListView.getChildAt(childIndex);
-                if (lastVisibleChild != null) {
-                    return lastVisibleChild.getBottom() - PRE_HEIGHT <= mLxListView.getBottom()-mLxListView.getTop();
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 预定义高度
-     */
-    private static final int PRE_HEIGHT = 250;
-
-    /**
-     * ListView
-     * 如果到了最底部,而且是上拉操作.那么执行onPullUpRefresh方法
-     */
-    private void loadLvData() {
-        if (mPullRefreshListener != null) {
-            // 设置状态
-            if (!mNoLoadMore){
-                setLvLoading(true);
-                mPullRefreshListener.onPullUpRefresh();
-            }
-        }
+    private boolean isListViewAndTouch(){
+        return mViewType == ViewType.List && mSomeTouchListener != null;
     }
 
     /**
@@ -397,50 +243,9 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
      * @param colorRes
      */
     public void setLvFooterViewBackground(int colorRes) {
-        if (mViewType == 0 && mListViewFooter != null) {
-            mListViewFooter.setBackgroundColor(getResources().getColor(colorRes));
+        if (mViewType == ViewType.List && mLxListView != null) {
+            mLxListView.setLvFooterViewBackground(colorRes);
         }
-    }
-
-    /**
-     * ListView
-     * @param loading
-     */
-    public void setLvLoading(boolean loading) {
-        isLoading = loading;
-        if (isLoading) {
-            if (mLxListView != null) {
-                mLxListView.addFooterView(mListViewFooter);
-            }
-        } else {
-            if (mLxListView != null) {
-                mLxListView.removeFooterView(mListViewFooter);
-                mYDown = 0;
-                mLastY = 0;
-            }
-        }
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (onListViewScrollListener != null){
-            onListViewScrollListener.onScrollStateChanged(view, scrollState);
-        }
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (onListViewScrollListener != null){
-            onListViewScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
-
-        if (mViewType == 0  && !isLoading && isLvPullUp() && isReadyForPullUp() && !super.isRefreshing() && !mNoLoadMore){
-            loadLvData();
-        }
-//        // 滚动时到了最底部也可以加载更多
-//        if (canLvLoad() && mViewType == 0) {
-//            loadLvData();
-//        }
     }
 
     /**
@@ -448,8 +253,10 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
      * 结束刷新
      */
     public void refreshReset() {
+        if (mViewType == ViewType.List){
+            mLxListView.setLvLoading(false);
+        }
         setRefreshing(false);
-        setLvLoading(false);
     }
 
     private boolean mLoarMoreEnable = true;
@@ -457,7 +264,6 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
         mLoarMoreEnable = loadMoreEnable;
         if (mLxRecyclerView != null){
             mLxRecyclerView.theEnd(!loadMoreEnable);
-//            mLxRecyclerView.setVisibilityFooterView(loadMoreEnable?View.VISIBLE:View.GONE);
         }else {
             Log.e("MrFu", "setLoadMoreEnable but the LxRecyclerView is null!!!!");
         }
@@ -476,15 +282,28 @@ public class LxRefresh extends SwipeRefreshLayout implements AbsListView.OnScrol
      */
     private boolean mIsRvLastPage = false;
 
-    public interface OnListViewScrollListener{
-        void onScrollStateChanged(AbsListView view, int scrollState);
-        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
-    }
-
     OnListViewScrollListener onListViewScrollListener;
 
     public void setOnListViewScrollListener(OnListViewScrollListener listener){
         onListViewScrollListener = listener;
+    }
+
+    SomeTouchListener mSomeTouchListener;
+
+    public void setSomeTouchListener(SomeTouchListener listener){
+        mSomeTouchListener = listener;
+    }
+
+
+    public interface SomeTouchListener{
+        boolean onInterceptTouchEventLxRefresh(MotionEvent event);
+        boolean dispatchTouchEventLxRefresh(MotionEvent event);
+        boolean onTouchEventLxRefresh(MotionEvent ev);
+    }
+
+    public interface OnListViewScrollListener{
+        void onScrollStateChanged(AbsListView view, int scrollState);
+        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
     }
 
 }

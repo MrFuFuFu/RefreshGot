@@ -3,6 +3,8 @@
     <color name="color_red">#ffff0000</color>
     <color name="color_background">#fff3f3f3</color>
 
+    <color name="transparent">#00000000</color>
+
 
     <color name="primary">#9C27B0</color>
     <color name="primary_dark">#7B1FA2</color>
