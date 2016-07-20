@@ -68,16 +68,27 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
         );
     }
 
+    boolean isPullDown = false;
 
     @Override
     public void onPullDownRefresh() {
+        isPullDown = true;
+        index = 5;
         loadTestData();
     }
 
     @Override
     public void onPullUpRefresh() {
-        loadTestData();
+        isPullDown = false;
+        if (index > 0){
+            loadTestData();
+            index --;
+        }else {
+            mLxRefresh.refreshReset();
+        }
     }
+
+    int index = 5;
 
 
     private void firstLoadTestData(){
@@ -96,7 +107,12 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
             @Override
             public void run() {
                 //load finish do it
-                list.addAll(getData());
+                if (isPullDown){
+                    arrayAdapter.clear();
+                    arrayAdapter.addAll(getData());
+                }else {
+                    arrayAdapter.addAll(getData());
+                }
                 arrayAdapter.notifyDataSetChanged();
                 mLxRefresh.refreshReset();
             }

@@ -90,9 +90,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
             switch (action) {
                 case MotionEvent.ACTION_MOVE:{
                     if (y < mLastMotionY) {
-                        if(mLxRefresh.doOnPullUpRefresh()){
-                            setLvLoading(true);
-                        }
+                        mLxRefresh.doOnPullUpRefresh();
                     }
                     break;
                 }

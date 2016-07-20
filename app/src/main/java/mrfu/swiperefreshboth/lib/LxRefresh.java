@@ -109,9 +109,7 @@ public class LxRefresh extends SwipeRefreshLayout {
                 }
 
                 if (mViewType == ViewType.List  && mLxListView.canLoad() && !isRefreshing() && !mNoLoadMore){
-                    if (doOnPullUpRefresh()){
-                        mLxListView.setLvLoading(true);
-                    }
+                    doOnPullUpRefresh();
                 }
             }
         });
@@ -142,10 +140,14 @@ public class LxRefresh extends SwipeRefreshLayout {
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener((LinearLayoutManager)layoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-                if (!doOnPullUpRefresh()){//没有加载更多
+                if (mNoLoadMore){//没有加载更多
                     if (mViewType == ViewType.Recycler && mLxRecyclerView != null){//RecyclerView
                         mLxRecyclerView.theEnd(true);
                     }
+                    return;
+                }
+                if (mLoarMoreEnable){
+                    doOnPullUpRefresh();
                 }
             }
         };
@@ -175,14 +177,13 @@ public class LxRefresh extends SwipeRefreshLayout {
 
     /**
      * 做下拉刷新操作, 并返回成功与否
-     * @return
      */
-    public boolean doOnPullUpRefresh() {
-        if (mPullRefreshListener != null && !mNoLoadMore && mLoarMoreEnable) {
+    public void doOnPullUpRefresh() {
+        if (mPullRefreshListener != null && !mNoLoadMore) {
+            if (mViewType == ViewType.List){
+                mLxListView.setLvLoading(true);
+            }
             mPullRefreshListener.onPullUpRefresh();
-            return true;
-        }else {
-            return false;
         }
     }
 
