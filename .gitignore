@@ -5,6 +5,5 @@
 .DS_Store
 /build
 /captures
-/gradle
 /app/app.iml
 /refreshgot/refreshgot.iml
