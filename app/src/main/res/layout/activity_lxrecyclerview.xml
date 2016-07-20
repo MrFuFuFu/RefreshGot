@@ -13,15 +13,15 @@
         android:elevation="8dp"
         android:minHeight="?attr/actionBarSize"/>
 
-    <mrfu.swiperefreshboth.lib.LxRefresh
+    <mrfu.refreshgot.GotRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <mrfu.swiperefreshboth.lib.LxRecyclerView
+        <mrfu.refreshgot.GotRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </mrfu.swiperefreshboth.lib.LxRefresh>
+    </mrfu.refreshgot.GotRefresh>
 </LinearLayout>

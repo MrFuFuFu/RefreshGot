@@ -1,28 +1,29 @@
-package mrfu.swiperefreshboth.lib;
+package mrfu.refreshgot;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import mrfu.swiperefreshboth.lib.recycler.HeaderViewRecyclerAdapter;
-import mrfu.swiperefreshboth.lib.utils.FooterView;
+import mrfu.refreshgot.recycler.HeaderViewRecyclerAdapter;
+import mrfu.refreshgot.utils.FooterView;
+
 
 /**
  * Created by MrFu on 16/3/18.
  */
-public class LxRecyclerView extends RecyclerView {
+public class GotRecyclerView extends RecyclerView {
 
     private HeaderViewRecyclerAdapter mHeaderViewRecyclerAdapter;
 
-    public LxRecyclerView(Context context) {
+    public GotRecyclerView(Context context) {
         super(context);
     }
 
-    public LxRecyclerView(Context context, AttributeSet attrs) {
+    public GotRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LxRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public GotRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

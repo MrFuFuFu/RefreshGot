@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.recycler;
+package mrfu.refreshgot.recycler;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

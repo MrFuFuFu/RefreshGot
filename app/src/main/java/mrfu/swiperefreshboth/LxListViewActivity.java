@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import mrfu.swiperefreshboth.lib.LxListView;
-import mrfu.swiperefreshboth.lib.LxRefresh;
-import mrfu.swiperefreshboth.lib.utils.PullRefreshListener;
+import mrfu.refreshgot.GotListView;
+import mrfu.refreshgot.GotRefresh;
+import mrfu.refreshgot.utils.PullRefreshListener;
 
 /**
  * Created by MrFu on 16/3/21.
@@ -26,9 +26,9 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
     private ArrayList<String> list = new ArrayList<>();
 
     @Bind(R.id.lx_refresh)
-    LxRefresh mLxRefresh;
+    GotRefresh mGotRefresh;
     @Bind(R.id.lx_listview)
-    LxListView mLxListView;
+    GotListView mGotListView;
     private ArrayAdapter arrayAdapter;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -44,8 +44,8 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
         initTitleBar();
 
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);//getData()
-        mLxRefresh.setOnPullRefreshListener(this);
-        mLxListView.setAdapter(mLxRefresh, arrayAdapter);
+        mGotRefresh.setOnPullRefreshListener(this);
+        mGotListView.setAdapter(mGotRefresh, arrayAdapter);
 
         firstLoadTestData();
     }
@@ -86,7 +86,7 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
             index --;
         }else {
             Toast.makeText(this, "No more data", Toast.LENGTH_SHORT).show();
-            mLxRefresh.refreshReset();
+            mGotRefresh.refreshReset();
         }
     }
 
@@ -116,7 +116,7 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
                     arrayAdapter.addAll(getData());
                 }
                 arrayAdapter.notifyDataSetChanged();
-                mLxRefresh.refreshReset();
+                mGotRefresh.refreshReset();
             }
         }, 500);
     }

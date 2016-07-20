@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.utils;
+package mrfu.refreshgot.utils;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -16,14 +16,14 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
-import android.view.animation.AnimationUtils;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import java.lang.ref.WeakReference;
 
-import mrfu.swiperefreshboth.R;
+import mrfu.refreshgot.R;
 
 /**
  * https://github.com/castorflex/SmoothProgressBar
@@ -324,7 +324,9 @@ public class CircularProgress extends View {
                 return;
             }
             if (mIsFirst){
-                startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_visibilty));
+                AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+                alphaAnimation.setDuration(500);
+                startAnimation(alphaAnimation);
                 mIsFirst = false;
             }
             mRunning = true;

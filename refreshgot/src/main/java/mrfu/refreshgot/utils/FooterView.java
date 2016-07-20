@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.utils;
+package mrfu.refreshgot.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import mrfu.swiperefreshboth.R;
+import mrfu.refreshgot.R;
 
 
 /**
@@ -50,7 +50,7 @@ public class FooterView extends RelativeLayout {
         footer.addView(circularProgress, circular_Params);
 
         textView = new TextView(context);
-        textView.setTextColor(context.getResources().getColor(R.color.black_b0b0b0));
+        textView.setTextColor(context.getResources().getColor(R.color.footer_end_text_color));
         textView.setTextSize(12f);
         textView.setText("-- end --");
         textView.setVisibility(View.GONE);
@@ -63,7 +63,7 @@ public class FooterView extends RelativeLayout {
 
     public void setAttributeSet(AttributeSet attributeSet) {
         if (null != attributeSet) {
-            TypedArray ta = getContext().obtainStyledAttributes(attributeSet, R.styleable.LxRefresh);
+            TypedArray ta = getContext().obtainStyledAttributes(attributeSet, R.styleable.GotRefresh);
             progressAbout(ta);
             otherAbout(ta);
             ta.recycle();
@@ -71,9 +71,9 @@ public class FooterView extends RelativeLayout {
     }
 
     private void otherAbout(TypedArray typedArray) {
-        int background_color = typedArray.getColor(R.styleable.LxRefresh_footer_background_color, getResources().getColor(R.color.footer_background_color));
-        int end_text_color = typedArray.getColor(R.styleable.LxRefresh_footer_end_text_color, getResources().getColor(R.color.footer_end_text_color));
-        String end_text = typedArray.getString(R.styleable.LxRefresh_footer_end_text);
+        int background_color = typedArray.getColor(R.styleable.GotRefresh_footer_background_color, getResources().getColor(R.color.footer_background_color));
+        int end_text_color = typedArray.getColor(R.styleable.GotRefresh_footer_end_text_color, getResources().getColor(R.color.footer_end_text_color));
+        String end_text = typedArray.getString(R.styleable.GotRefresh_footer_end_text);
         if (footer != null){
             footer.setBackgroundColor(background_color);
         }
@@ -86,9 +86,9 @@ public class FooterView extends RelativeLayout {
     }
 
     private void progressAbout(TypedArray typedArray){
-        int color = typedArray.getColor(R.styleable.LxRefresh_footer_loading_color, getResources().getColor(R.color.footer_loading_color));
-        int size = typedArray.getInt(R.styleable.LxRefresh_footer_loading_size, CircularProgress.NORMAL_SIZE);
-        int borderWidth = typedArray.getDimensionPixelSize(R.styleable.LxRefresh_footer_loading_border_width, getResources().getDimensionPixelSize(R.dimen.footer_loading_border_width));
+        int color = typedArray.getColor(R.styleable.GotRefresh_footer_loading_color, getResources().getColor(R.color.footer_loading_color));
+        int size = typedArray.getInt(R.styleable.GotRefresh_footer_loading_size, CircularProgress.NORMAL_SIZE);
+        int borderWidth = typedArray.getDimensionPixelSize(R.styleable.GotRefresh_footer_loading_border_width, getResources().getDimensionPixelSize(R.dimen.footer_loading_border_width));
 
         circularProgress.setCircularProgressAbout(color, size, borderWidth);
     }

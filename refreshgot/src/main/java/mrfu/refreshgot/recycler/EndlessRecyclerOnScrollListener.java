@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.recycler;
+package mrfu.refreshgot.recycler;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

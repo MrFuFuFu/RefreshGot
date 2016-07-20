@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.recycler;
+package mrfu.refreshgot.recycler;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mrfu.swiperefreshboth.lib.utils.FooterView;
+import mrfu.refreshgot.utils.FooterView;
 
 /**
  * http://www.easydone.cn/2015/10/26/

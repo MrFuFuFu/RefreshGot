@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import mrfu.swiperefreshboth.lib.LxRecyclerView;
-import mrfu.swiperefreshboth.lib.LxRefresh;
-import mrfu.swiperefreshboth.lib.utils.PullRefreshListener;
+import mrfu.refreshgot.GotRecyclerView;
+import mrfu.refreshgot.GotRefresh;
+import mrfu.refreshgot.utils.PullRefreshListener;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -27,9 +27,9 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
     private List<String> mList;
 
     @Bind(R.id.swipe_refresh_layout)
-    LxRefresh mLxRefresh;
+    GotRefresh mGotRefresh;
     @Bind(R.id.recycler_view)
-    LxRecyclerView mLxRecyclerView;
+    GotRecyclerView mGotRecyclerView;
     private RefreshAdapter mRefreshAdapter;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -43,14 +43,14 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
         initTitleBar();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mLxRecyclerView.setHasFixedSize(true);
-        mLxRecyclerView.setLayoutManager(linearLayoutManager);
+        mGotRecyclerView.setHasFixedSize(true);
+        mGotRecyclerView.setLayoutManager(linearLayoutManager);
 
         setData();
         mRefreshAdapter = new RefreshAdapter(mList, this);
-        mLxRecyclerView.setAdapter(mRefreshAdapter);
-        mLxRefresh.setOnPullRefreshListener(this);
-        mLxRefresh.setLoadMoreEnable(true);
+        mGotRecyclerView.setAdapter(mRefreshAdapter);
+        mGotRefresh.setOnPullRefreshListener(this);
+        mGotRefresh.setLoadMoreEnable(true);
     }
 
     @Override
@@ -90,8 +90,8 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                     public Object call(Long aLong) {
                         fetchingNewData();
                         mRefreshAdapter.setList(mList);
-                        mLxRefresh.refreshReset();
-                        mLxRefresh.setLoadMoreEnable(aaaa > 0);
+                        mGotRefresh.refreshReset();
+                        mGotRefresh.setLoadMoreEnable(aaaa > 0);
                         return null;
                     }
                 }).subscribe();
@@ -100,11 +100,11 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
     @Override
     public void onPullUpRefresh() {
         if (aaaa > 0){
-            mLxRefresh.setLoadMoreEnable(aaaa > 0);
+            mGotRefresh.setLoadMoreEnable(aaaa > 0);
             simulateLoadMoreData();
         }else {
-            mLxRefresh.setLoadMoreEnable(false);
-            mLxRefresh.refreshReset();
+            mGotRefresh.setLoadMoreEnable(false);
+            mGotRefresh.refreshReset();
         }
     }
 
@@ -126,8 +126,8 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                         loadMoreData();
                         mRefreshAdapter.setList(mList);
                         aaaa --;
-                        mLxRefresh.setLoadMoreEnable(aaaa > 0);
-                        mLxRefresh.refreshReset();
+                        mGotRefresh.setLoadMoreEnable(aaaa > 0);
+                        mGotRefresh.refreshReset();
                         return null;
                     }
                 }).subscribe();

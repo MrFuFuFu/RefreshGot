@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib;
+package mrfu.refreshgot;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,20 +8,20 @@ import android.view.ViewConfiguration;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import mrfu.swiperefreshboth.lib.LxRefresh.OnEventType;
-import mrfu.swiperefreshboth.lib.utils.FooterView;
+import mrfu.refreshgot.utils.FooterView;
+import mrfu.refreshgot.GotRefresh.OnEventType;
 
 /**
  * Created by MrFu on 16/3/18.
  */
-public class LxListView extends ListView implements LxRefresh.SomeTouchListener {
+public class GotListView extends ListView implements GotRefresh.SomeTouchListener {
     /**
      * 预定义高度
      */
     private static final int PRE_HEIGHT = 250;
     private final FooterView mFooterView;
 
-    private LxRefresh mLxRefresh;
+    private GotRefresh mGotRefresh;
     /**
      * 是否在加载中 ( 上拉加载更多 )
      */
@@ -45,23 +45,23 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
      */
     private int mLastY;
 
-    public LxListView(Context context) {
+    public GotListView(Context context) {
         this(context, null);
     }
 
-    public LxListView(Context context, AttributeSet attrs) {
+    public GotListView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LxListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GotListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mFooterView = new FooterView(getContext());
     }
 
-    public void setAdapter(LxRefresh lxRefresh, ListAdapter adapter) {
-        if (lxRefresh == null) return;
-        mLxRefresh = lxRefresh;
+    public void setAdapter(GotRefresh gotRefresh, ListAdapter adapter) {
+        if (gotRefresh == null) return;
+        mGotRefresh = gotRefresh;
         if (mFooterView != null){
             addFooterView(mFooterView);//一定要先添加一次，不然会报错，setAdapter 之后 remove 掉   看这里：http://blog.csdn.net/Take_all/article/details/7635116
         }
@@ -70,7 +70,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
             removeFooterView(mFooterView);
         }
 
-        mLxRefresh.setSomeTouchListener(this);
+        mGotRefresh.setSomeTouchListener(this);
     }
 
     @Override
@@ -84,13 +84,13 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
     @Override
     public OnEventType onInterceptTouchEventLxRefresh(MotionEvent event) {
         int action = event.getAction();
-        if (isReadyForPullUp() && !isLoading && !mLxRefresh.isRefreshing()){// read to refresh
+        if (isReadyForPullUp() && !isLoading && !mGotRefresh.isRefreshing()){// read to refresh
             float x = event.getX();
             float y = event.getY();
             switch (action) {
                 case MotionEvent.ACTION_MOVE:{
                     if (y < mLastMotionY) {
-                        mLxRefresh.doOnPullUpRefresh();
+                        mGotRefresh.doOnPullUpRefresh();
                     }
                     break;
                 }
@@ -112,7 +112,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
                 ly = event.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mLxRefresh != null && !mLxRefresh.canChildScrollUp()) {
+                if (mGotRefresh != null && !mGotRefresh.canChildScrollUp()) {
                     float dy = event.getRawY() - ly;
                     float dx = event.getRawX() - lx;
                     if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {

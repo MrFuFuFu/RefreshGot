@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib.utils;
+package mrfu.refreshgot.utils;
 
 public interface PullRefreshListener {
 	

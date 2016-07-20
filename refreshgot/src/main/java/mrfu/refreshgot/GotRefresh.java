@@ -1,4 +1,4 @@
-package mrfu.swiperefreshboth.lib;
+package mrfu.refreshgot;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,14 +12,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 
-import mrfu.swiperefreshboth.R;
-import mrfu.swiperefreshboth.lib.recycler.EndlessRecyclerOnScrollListener;
-import mrfu.swiperefreshboth.lib.utils.PullRefreshListener;
+import mrfu.refreshgot.recycler.EndlessRecyclerOnScrollListener;
+import mrfu.refreshgot.utils.PullRefreshListener;
 
 /**
  * Created by MrFu on 16/3/18.
  */
-public class LxRefresh extends SwipeRefreshLayout {
+public class GotRefresh extends SwipeRefreshLayout {
     enum ViewType{
         List, Recycler
     }
@@ -27,8 +26,8 @@ public class LxRefresh extends SwipeRefreshLayout {
     ViewType mViewType;
 
     private PullRefreshListener mPullRefreshListener;
-    private LxListView mLxListView;
-    private LxRecyclerView mLxRecyclerView;
+    private GotListView mGotListView;
+    private GotRecyclerView mGotRecyclerView;
     private AttributeSet mAttributeSet;
 
     /**
@@ -38,17 +37,17 @@ public class LxRefresh extends SwipeRefreshLayout {
 
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
 
-    public LxRefresh(Context context) {
+    public GotRefresh(Context context) {
         this(context, null);
     }
 
-    public LxRefresh(Context context, AttributeSet attrs) {
+    public GotRefresh(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         if (null != attrs) {
             mAttributeSet = attrs;
-            TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.LxRefresh);
-            mLoarMoreEnable = ta.getBoolean(R.styleable.LxRefresh_loadmoreable, true);
+            TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.GotRefresh);
+            mLoarMoreEnable = ta.getBoolean(R.styleable.GotRefresh_loadmoreable, true);
             ta.recycle();
         }
         setColorSchemeResources(R.color.footer_loading_color,
@@ -68,18 +67,18 @@ public class LxRefresh extends SwipeRefreshLayout {
     }
 
     private void initRefreshChildView() {
-        if (mLxListView != null || mLxRecyclerView != null){
+        if (mGotListView != null || mGotRecyclerView != null){
             return;
         }
         final int childs = getChildCount();
 
         for (int i = childs-1; i >= 0; i--) {
             final View childView = getChildAt(i);
-            if (childView instanceof LxListView) {
+            if (childView instanceof GotListView) {
                 mViewType = ViewType.List;
                 initLxListView(childView);
                 break;
-            }else if (childView instanceof LxRecyclerView){
+            }else if (childView instanceof GotRecyclerView){
                 mViewType = ViewType.Recycler;
                 initLxRecyclerView(childView);
                 break;
@@ -92,11 +91,11 @@ public class LxRefresh extends SwipeRefreshLayout {
      * @param childView
      */
     private void initLxListView(View childView){
-        if (mLxListView != null) return;
-        mLxListView = (LxListView) childView;
-        mLxListView.setAttributeSet(mAttributeSet);
+        if (mGotListView != null) return;
+        mGotListView = (GotListView) childView;
+        mGotListView.setAttributeSet(mAttributeSet);
         // 设置滚动监听器给ListView, 使得滚动的情况下也可以自动加载
-        mLxListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        mGotListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (onListViewScrollListener != null){
@@ -110,7 +109,7 @@ public class LxRefresh extends SwipeRefreshLayout {
                     onListViewScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
                 }
 
-                if (mViewType == ViewType.List  && mLxListView.canLoad() && !isRefreshing() && !mNoLoadMore){
+                if (mViewType == ViewType.List  && mGotListView.canLoad() && !isRefreshing() && !mNoLoadMore){
                     doOnPullUpRefresh();
                 }
             }
@@ -122,10 +121,10 @@ public class LxRefresh extends SwipeRefreshLayout {
      * @param childView
      */
     private void initLxRecyclerView(View childView){
-        if (mLxRecyclerView != null) return;
-        mLxRecyclerView = (LxRecyclerView) childView;
-        mLxRecyclerView.setAttributeSet(mAttributeSet);
-        RecyclerView.LayoutManager layoutManager = mLxRecyclerView.getLayoutManager();
+        if (mGotRecyclerView != null) return;
+        mGotRecyclerView = (GotRecyclerView) childView;
+        mGotRecyclerView.setAttributeSet(mAttributeSet);
+        RecyclerView.LayoutManager layoutManager = mGotRecyclerView.getLayoutManager();
         if (layoutManager == null) {
             Log.e("LxRefresh", "layoutManager == null");
             return;
@@ -136,7 +135,7 @@ public class LxRefresh extends SwipeRefreshLayout {
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return ((mLxRecyclerView.getHeaderViewRecyclerAdapter().getItemCount() - 1) == position) ? gridLayoutManager.getSpanCount() : 1;
+                    return ((mGotRecyclerView.getHeaderViewRecyclerAdapter().getItemCount() - 1) == position) ? gridLayoutManager.getSpanCount() : 1;
                 }
             });
         }
@@ -144,8 +143,8 @@ public class LxRefresh extends SwipeRefreshLayout {
             @Override
             public void onLoadMore(int currentPage) {
                 if (mNoLoadMore){//没有加载更多
-                    if (mViewType == ViewType.Recycler && mLxRecyclerView != null){//RecyclerView
-                        mLxRecyclerView.theEnd(true);
+                    if (mViewType == ViewType.Recycler && mGotRecyclerView != null){//RecyclerView
+                        mGotRecyclerView.theEnd(true);
                     }
                     return;
                 }
@@ -154,7 +153,7 @@ public class LxRefresh extends SwipeRefreshLayout {
                 }
             }
         };
-        mLxRecyclerView.addOnScrollListener(mEndlessRecyclerOnScrollListener);
+        mGotRecyclerView.addOnScrollListener(mEndlessRecyclerOnScrollListener);
         // onlayout里才初始化mLxRecyclerView 导致Loadmore提前开启
         setLoadMoreEnable(mLoarMoreEnable);
     }
@@ -171,8 +170,8 @@ public class LxRefresh extends SwipeRefreshLayout {
                 mEndlessRecyclerOnScrollListener.setNewRefresh();
             }
             //update by yifeiyuan
-            if (mViewType == ViewType.Recycler && mLxRecyclerView != null && !mNoLoadMore&&mLoarMoreEnable){
-                mLxRecyclerView.theEnd(false);
+            if (mViewType == ViewType.Recycler && mGotRecyclerView != null && !mNoLoadMore&&mLoarMoreEnable){
+                mGotRecyclerView.theEnd(false);
             }
             mPullRefreshListener.onPullDownRefresh();
         }
@@ -184,7 +183,7 @@ public class LxRefresh extends SwipeRefreshLayout {
     public void doOnPullUpRefresh() {
         if (mPullRefreshListener != null && !mNoLoadMore) {
             if (mViewType == ViewType.List){
-                mLxListView.setLvLoading(true);
+                mGotListView.setLvLoading(true);
             }
             mPullRefreshListener.onPullUpRefresh();
         }
@@ -272,7 +271,7 @@ public class LxRefresh extends SwipeRefreshLayout {
      */
     public void refreshReset() {
         if (mViewType == ViewType.List){
-            mLxListView.setLvLoading(false);
+            mGotListView.setLvLoading(false);
         }
         setRefreshing(false);
     }
@@ -280,8 +279,8 @@ public class LxRefresh extends SwipeRefreshLayout {
     private boolean mLoarMoreEnable = true;
     public void setLoadMoreEnable(boolean loadMoreEnable) {
         mLoarMoreEnable = loadMoreEnable;
-        if (mLxRecyclerView != null){
-            mLxRecyclerView.theEnd(!loadMoreEnable);
+        if (mGotRecyclerView != null){
+            mGotRecyclerView.theEnd(!loadMoreEnable);
         }
         if (!loadMoreEnable){
             if (null != mEndlessRecyclerOnScrollListener) {

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SwipeRefreshBoth.iml" filepath="$PROJECT_DIR$/SwipeRefreshBoth.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/refreshgot/refreshgot.iml" filepath="$PROJECT_DIR$/refreshgot/refreshgot.iml" />
     </modules>
   </component>
 </project>
