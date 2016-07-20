@@ -8,8 +8,8 @@ import android.view.ViewConfiguration;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import mrfu.swiperefreshboth.lib.utils.ViewUtils;
 import mrfu.swiperefreshboth.lib.LxRefresh.OnEventType;
+import mrfu.swiperefreshboth.lib.utils.FooterView;
 
 /**
  * Created by MrFu on 16/3/18.
@@ -19,7 +19,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
      * 预定义高度
      */
     private static final int PRE_HEIGHT = 250;
-    private final View mListViewFooter;
+    private final FooterView mFooterView;
 
     private LxRefresh mLxRefresh;
     /**
@@ -56,18 +56,18 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
     public LxListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mListViewFooter = ViewUtils.initFooterView(context);
+        mFooterView = new FooterView(getContext());
     }
 
     public void setAdapter(LxRefresh lxRefresh, ListAdapter adapter) {
         if (lxRefresh == null) return;
         mLxRefresh = lxRefresh;
-        if (mListViewFooter != null){
-            addFooterView(mListViewFooter);//一定要先添加一次，不然会报错，setAdapter 之后 remove 掉   看这里：http://blog.csdn.net/Take_all/article/details/7635116
+        if (mFooterView != null){
+            addFooterView(mFooterView);//一定要先添加一次，不然会报错，setAdapter 之后 remove 掉   看这里：http://blog.csdn.net/Take_all/article/details/7635116
         }
         super.setAdapter(adapter);
-        if (mListViewFooter != null){
-            removeFooterView(mListViewFooter);
+        if (mFooterView != null){
+            removeFooterView(mFooterView);
         }
 
         mLxRefresh.setSomeTouchListener(this);
@@ -183,9 +183,9 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
     public void setLvLoading(boolean loading) {
         isLoading = loading;
         if (isLoading) {
-            addFooterView(mListViewFooter);
+            addFooterView(mFooterView);
         } else {
-            removeFooterView(mListViewFooter);
+            removeFooterView(mFooterView);
             mYDown = 0;
             mLastY = 0;
         }
@@ -207,14 +207,7 @@ public class LxListView extends ListView implements LxRefresh.SomeTouchListener 
         return !isLoading && isLvPullUp() && isReadyForPullUp();
     }
 
-    /**
-     * ListView
-     * currently, only support setting of listview background
-     * @param colorRes
-     */
-    public void setFooterViewBackgroundColor(int colorRes) {
-        if (mListViewFooter != null) {
-            mListViewFooter.setBackgroundColor(getResources().getColor(colorRes));
-        }
+    public void setAttributeSet(AttributeSet attributeSet) {
+        mFooterView.setAttributeSet(attributeSet);
     }
 }

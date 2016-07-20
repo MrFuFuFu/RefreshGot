@@ -29,6 +29,7 @@ public class LxRefresh extends SwipeRefreshLayout {
     private PullRefreshListener mPullRefreshListener;
     private LxListView mLxListView;
     private LxRecyclerView mLxRecyclerView;
+    private AttributeSet mAttributeSet;
 
     /**
      * 只有下拉刷新, 无加载更多
@@ -36,7 +37,6 @@ public class LxRefresh extends SwipeRefreshLayout {
     private boolean mNoLoadMore = false;
 
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
-
 
     public LxRefresh(Context context) {
         this(context, null);
@@ -46,11 +46,12 @@ public class LxRefresh extends SwipeRefreshLayout {
         super(context, attrs);
 
         if (null != attrs) {
+            mAttributeSet = attrs;
             TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.LxRefresh);
             mLoarMoreEnable = ta.getBoolean(R.styleable.LxRefresh_loadmoreable, true);
             ta.recycle();
         }
-        setColorSchemeResources(android.R.color.holo_red_dark,
+        setColorSchemeResources(R.color.footer_loading_color,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -93,6 +94,7 @@ public class LxRefresh extends SwipeRefreshLayout {
     private void initLxListView(View childView){
         if (mLxListView != null) return;
         mLxListView = (LxListView) childView;
+        mLxListView.setAttributeSet(mAttributeSet);
         // 设置滚动监听器给ListView, 使得滚动的情况下也可以自动加载
         mLxListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -122,6 +124,7 @@ public class LxRefresh extends SwipeRefreshLayout {
     private void initLxRecyclerView(View childView){
         if (mLxRecyclerView != null) return;
         mLxRecyclerView = (LxRecyclerView) childView;
+        mLxRecyclerView.setAttributeSet(mAttributeSet);
         RecyclerView.LayoutManager layoutManager = mLxRecyclerView.getLayoutManager();
         if (layoutManager == null) {
             Log.e("LxRefresh", "layoutManager == null");
@@ -261,18 +264,6 @@ public class LxRefresh extends SwipeRefreshLayout {
      */
     public void setNoLoadMore(){
         mNoLoadMore = true;
-    }
-
-    public void setFooterViewBackgroundColor(int colorRes) {
-        if (mViewType == ViewType.List) {
-            mLxListView.setFooterViewBackgroundColor(colorRes);
-        }else {
-            mLxRecyclerView.setFooterViewBackgroundColor(colorRes);
-        }
-    }
-
-    public void setFooterEndText(String text){
-        mLxRecyclerView.setFooterEndText(text);
     }
 
     /**

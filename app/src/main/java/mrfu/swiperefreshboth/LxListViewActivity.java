@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
     @Override
     public void onPullDownRefresh() {
         isPullDown = true;
-        index = 5;
+        index = 3;
         loadTestData();
     }
 
@@ -84,11 +85,12 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
             loadTestData();
             index --;
         }else {
+            Toast.makeText(this, "No more data", Toast.LENGTH_SHORT).show();
             mLxRefresh.refreshReset();
         }
     }
 
-    int index = 5;
+    int index = 3;
 
 
     private void firstLoadTestData(){
@@ -123,20 +125,22 @@ public class LxListViewActivity extends AppCompatActivity implements PullRefresh
         ArrayList<String> list = new ArrayList<>();
         list.add(count++ + "  Yuan Fu");
         list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  Yuan Fu");
-        list.add(count++ + "  http://mrfufufu.github.io/");
+        list.add(count++ + "  http://mrfu.me/");
         list.add(count++ + "  GitHub: MrFuFuFu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  Yuan Fu");
+//        list.add(count++ + "  http://mrfufufu.github.io/");
+//        list.add(count++ + "  GitHub: MrFuFuFu");
         return list;
     }
 }

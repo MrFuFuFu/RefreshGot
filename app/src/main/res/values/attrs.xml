@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- CircularProgress Attribute -->
-    <declare-styleable name="CircularProgress">
-        <attr name="circular_progress_color" format="color"/>
-        <attr name="circular_progress_size" format="enum">
+    <!--&lt;!&ndash; CircularProgress Attribute &ndash;&gt;-->
+    <!--<declare-styleable name="CircularProgress">-->
+        <!--<attr name="circular_progress_color" format="color"/>-->
+        <!--<attr name="circular_progress_size" format="enum">-->
+            <!--<enum name="Small" value="0"/>-->
+            <!--<enum name="Normal" value="1"/>-->
+            <!--<enum name="Large" value="2"/>-->
+        <!--</attr>-->
+        <!--<attr name="circular_progress_border_width" format="dimension"/>-->
+    <!--</declare-styleable>-->
+
+    <declare-styleable name="LxRefresh">
+        <attr name="loadmoreable" format="boolean"/>
+        <attr name="footer_loading_color" format="color"/>
+        <attr name="footer_loading_size" format="enum">
             <enum name="Small" value="0"/>
             <enum name="Normal" value="1"/>
             <enum name="Large" value="2"/>
         </attr>
-        <attr name="circular_progress_border_width" format="dimension"/>
-        <attr name="circular_progress_indeterminate" format="boolean"/>
-        <attr name="circular_progress_max" format="integer"/>
-        <attr name="circular_progress_duration" format="integer"/>
-    </declare-styleable>
+        <attr name="footer_loading_border_width" format="dimension"/>
 
-    <declare-styleable name="LxRefresh">
-        <attr name="loadmoreable" format="boolean"/>
+        <attr name="footer_background_color" format="color"/>
+        <attr name="footer_end_text" format="string"/>
+        <attr name="footer_end_text_color" format="color"/>
     </declare-styleable>
 
 </resources>

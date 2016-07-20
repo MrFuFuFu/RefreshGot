@@ -1,7 +1,9 @@
 package mrfu.swiperefreshboth.lib.utils;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AbsListView;
@@ -59,24 +61,36 @@ public class FooterView extends RelativeLayout {
         addView(footer);
     }
 
-    /**
-     *
-     * @param colorRes R.color.color_xxx
-     */
-    public void setFooterViewBackgroundColor(int colorRes){
-        if (footer != null){
-            footer.setBackgroundColor(getContext().getResources().getColor(colorRes));
+    public void setAttributeSet(AttributeSet attributeSet) {
+        if (null != attributeSet) {
+            TypedArray ta = getContext().obtainStyledAttributes(attributeSet, R.styleable.LxRefresh);
+            progressAbout(ta);
+            otherAbout(ta);
+            ta.recycle();
         }
     }
 
-    /**
-     * modify end text desc
-     * @param text
-     */
-    public void setFooterEndText(String text){
-        if (textView != null){
-            textView.setText(text);
+    private void otherAbout(TypedArray typedArray) {
+        int background_color = typedArray.getColor(R.styleable.LxRefresh_footer_background_color, getResources().getColor(R.color.footer_background_color));
+        int end_text_color = typedArray.getColor(R.styleable.LxRefresh_footer_end_text_color, getResources().getColor(R.color.footer_end_text_color));
+        String end_text = typedArray.getString(R.styleable.LxRefresh_footer_end_text);
+        if (footer != null){
+            footer.setBackgroundColor(background_color);
         }
+        if (textView != null){
+            textView.setTextColor(end_text_color);
+            if (!TextUtils.isEmpty(end_text)){
+                textView.setText(end_text);
+            }
+        }
+    }
+
+    private void progressAbout(TypedArray typedArray){
+        int color = typedArray.getColor(R.styleable.LxRefresh_footer_loading_color, getResources().getColor(R.color.footer_loading_color));
+        int size = typedArray.getInt(R.styleable.LxRefresh_footer_loading_size, CircularProgress.NORMAL_SIZE);
+        int borderWidth = typedArray.getDimensionPixelSize(R.styleable.LxRefresh_footer_loading_border_width, getResources().getDimensionPixelSize(R.dimen.footer_loading_border_width));
+
+        circularProgress.setCircularProgressAbout(color, size, borderWidth);
     }
 
     private static int dip2px(Context context, float dpValue) {
