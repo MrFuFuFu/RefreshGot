@@ -282,8 +282,6 @@ public class LxRefresh extends SwipeRefreshLayout {
         mLoarMoreEnable = loadMoreEnable;
         if (mLxRecyclerView != null){
             mLxRecyclerView.theEnd(!loadMoreEnable);
-        }else {
-            Log.e("MrFu", "setLoadMoreEnable but the LxRecyclerView is null!!!!");
         }
         if (!loadMoreEnable){
             if (null != mEndlessRecyclerOnScrollListener) {
