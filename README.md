@@ -3,7 +3,7 @@
 
 ## Description
 
-An pull down refresh and pull up refresh for `ListView` and `RecyclerView`.
+A pull down refreshing and pull up refreshing library for `ListView` and `RecyclerView`.
 
 `RefreshGot` means Refresh ***Game Of Thrones***.
 
