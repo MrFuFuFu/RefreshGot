@@ -5,13 +5,13 @@
 
 An pull down refresh and pull up refresh for `ListView` and `RecyclerView`.
 
-RefreshGot means Refresh ***Game Of Thrones***.
+`RefreshGot` means Refresh ***Game Of Thrones***.
 
 ## Dependency
 
 use Gradle:
 
-```xml
+```gradle
 compile 'mrfu.refreshgot:refreshgot:0.1'
 ```
 
