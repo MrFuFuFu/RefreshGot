@@ -16,6 +16,7 @@ import mrfu.refreshgot.recycler.EndlessRecyclerOnScrollListener;
 import mrfu.refreshgot.utils.PullRefreshListener;
 
 /**
+ * An pull down refresh and pull up refresh for `ListView` and `RecyclerView`.
  * Created by MrFu on 16/3/18.
  */
 public class GotRefresh extends SwipeRefreshLayout {
@@ -277,6 +278,13 @@ public class GotRefresh extends SwipeRefreshLayout {
     }
 
     private boolean mLoarMoreEnable = true;
+
+    /**
+     * Only RecyclerView needs to call this method, ListView doesn't needs it.
+     *
+     * Close pull up refresh
+     * @param loadMoreEnable
+     */
     public void setLoadMoreEnable(boolean loadMoreEnable) {
         mLoarMoreEnable = loadMoreEnable;
         if (mGotRecyclerView != null){

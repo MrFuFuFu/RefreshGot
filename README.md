@@ -1,63 +1,92 @@
-SwipeRefreshBoth
-=====================
+# RefreshGot
 
 
-## 描述
+## Description
 
-下拉刷新
-
-包含: ListView 和 RecyclerView 的形式!!
+An pull down refresh and pull up refresh for `ListView` and `RecyclerView`.
 
 
 
-## How to use?
+## Dependency
 
-
-需要使用下拉刷新的xml 这样写：
+use Gradle:
 
 ```xml
-<mrfu.swiperefreshboth.lib.LxRefresh
+compile 'mrfu.refreshgot:refreshgot:0.1'
+```
+
+or use maven:
+
+```xml
+<dependency>
+  <groupId>mrfu.refreshgot</groupId>
+  <artifactId>refreshgot</artifactId>
+  <version>0.1</version>
+  <type>pom</type>
+</dependency>
+```
+
+## How do I use RefreshGot?
+
+just like this below code：
+
+```xml
+<mrfu.refreshgot.GotRefresh
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <mrfu.refreshgot.GotRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</mrfu.refreshgot.GotRefresh>
+```
+
+or
+
+```xml
+<mrfu.refreshgot.GotRefresh
     android:id="@+id/lx_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <mrfu.swiperefreshboth.lib.LxListView
+    <mrfu.refreshgot.GotListView
         android:id="@+id/lx_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-</mrfu.swiperefreshboth.lib.LxRefresh>
+</mrfu.refreshgot.GotRefresh>
 ```
 
-Java 代码中如下写法，需要增加 `PullRefreshListener` 接口
+
+
+In java code，add `PullRefreshListener` implements
+
+RecyclerView:
 
 ```Java
-LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-mLxRecyclerView.setHasFixedSize(true);
-mLxRecyclerView.setLayoutManager(linearLayoutManager);
-
-setData();
-mRefreshAdapter = new RefreshAdapter(mList, this);
-mLxRecyclerView.setAdapter(mRefreshAdapter);
-mLxRefresh.setOnPullRefreshListener(this);
+mGotRecyclerView.setAdapter(mRefreshAdapter);
+mGotRefresh.setOnPullRefreshListener(this);
 ```
 
-如果加载完成则调用如下方法:
+When Loading finish:
 
 ```java
-mLxRefresh.refreshReset();
+mGotRefresh.refreshReset();
 ```
 
-对于 `RecyclerView` 如果加载到了最后一页,不再有上拉加载,则再多调用一次如下方法:
+When No more data, and load ended:
 
 ```java
-mLxRefresh.setLoadMoreEnable(false);//false 关闭加载更多. true 可以加载更多
+//Only RecyclerView needs to call this method, ListView doesn't needs it.
+mGotRefresh.setLoadMoreEnable(false);//close pull up refresh
 ```
 
-如果只需要下拉刷新,不需要上拉加载,则调用如下方法关闭上拉加载:
+
+If you only need pull down refresh, don't need pull up refresh, just call this method to close it:
 
 ```java
-mLxRefresh.setNoLoadMore();
+mGotRefresh.setNoLoadMore();
 ```
 
 
@@ -67,9 +96,9 @@ mLxRefresh.setNoLoadMore();
 ![preview1](https://raw.githubusercontent.com/MrFuFuFu/SwipeRefreshBoth/master/images/pulldown.png)
 ![preview2](https://raw.githubusercontent.com/MrFuFuFu/SwipeRefreshBoth/master/images/pullup.png)
 
-## More about me
+## About me
 
-* [MrFu-傅圆的个人博客](http://mrfufufu.github.io/)
+**[MrFu Blog](http://mrfu.me/)**
 
 License
 ============

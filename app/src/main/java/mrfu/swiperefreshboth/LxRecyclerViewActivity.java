@@ -50,7 +50,8 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
         mRefreshAdapter = new RefreshAdapter(mList, this);
         mGotRecyclerView.setAdapter(mRefreshAdapter);
         mGotRefresh.setOnPullRefreshListener(this);
-        mGotRefresh.setLoadMoreEnable(true);
+        //If you only need pull down refresh, don't need pull up refresh, just call this method to close it:
+//        mGotRefresh.setNoLoadMore();
     }
 
     @Override
@@ -126,7 +127,8 @@ public class LxRecyclerViewActivity extends AppCompatActivity implements PullRef
                         loadMoreData();
                         mRefreshAdapter.setList(mList);
                         aaaa --;
-                        mGotRefresh.setLoadMoreEnable(aaaa > 0);
+                        //Only RecyclerView needs to call this method, ListView doesn't needs it.
+                        mGotRefresh.setLoadMoreEnable(aaaa > 0);//close pull up refresh
                         mGotRefresh.refreshReset();
                         return null;
                     }
