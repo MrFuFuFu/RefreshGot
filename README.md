@@ -92,6 +92,20 @@ If you only need pull down refresh, don't need pull up refresh, just call this m
 mGotRefresh.setNoLoadMore();
 ```
 
+You can add default.xml in the `values` Directory to config refresh style
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="footer_loading_color">#fff81948</color>
+    <dimen name="footer_loading_border_width">2dp</dimen>
+    <dimen name="footer_loading_small_size">36dp</dimen>
+    <dimen name="footer_loading_normal_size">48dp</dimen>
+    <dimen name="footer_loading_large_size">60dp</dimen>
+
+    <color name="footer_background_color">#00000000</color>
+    <color name="footer_end_text_color">#b0b0b0</color>
+</resources>
+```
 
 
 ## Preview
